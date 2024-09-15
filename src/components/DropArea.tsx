@@ -1,15 +1,25 @@
 import { useState } from 'react';
 import './DropArea.css';
+import { useTask } from '../context/TaskContext';
 type Props = {
   onDrop: () => void;
+  index?: number;
 };
 
-function DropArea({ onDrop }: Props) {
+function DropArea({ index, onDrop }: Props) {
+  const { activeCard } = useTask();
   const [showDrop, setShowDrop] = useState(false);
+
+  function handleDragEnter() {
+    if (activeCard && index !== activeCard && index !== activeCard - 1) {
+      setShowDrop(true);
+      console.log({ activeCard, index });
+    }
+  }
 
   return (
     <section
-      onDragEnter={() => setShowDrop(true)}
+      onDragEnter={() => handleDragEnter()}
       onDragLeave={() => {
         setShowDrop(false);
       }}

@@ -2,18 +2,17 @@ import { useState } from 'react';
 import Tag from './Tag';
 import './TaskForm.css';
 import { Task, TaskStatus } from '../type';
+import { useTask } from '../context/TaskContext';
 const tagsData = ['HTML', 'CSS', 'JavaScript', 'React'];
 
-interface Props {
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-}
 const defaultData = {
   task: '',
   status: TaskStatus.Todo,
   tags: [],
 };
 
-function TaskForm({ setTasks }: Props) {
+function TaskForm() {
+  const { setTasks } = useTask();
   const [taskData, setTaskData] = useState<Task>(defaultData);
 
   function checkTag(tag: string) {

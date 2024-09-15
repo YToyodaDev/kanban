@@ -1,16 +1,17 @@
 import Tag from './Tag';
 import './TaskCard.css';
 import deleteIcon from '../assets/delete.png';
+import { useTask } from '../context/TaskContext';
 
 interface Props {
   title: string;
   tags: string[];
-  onDelete: () => void;
   index: number;
-  setActiveCard: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-function TaskCard({ index, title, tags, onDelete, setActiveCard }: Props) {
+function TaskCard({ index, title, tags }: Props) {
+  const { setActiveCard, handleDelete } = useTask();
+  const onDelete = handleDelete.bind(null, index);
   return (
     <article
       className='task_card'
@@ -18,11 +19,14 @@ function TaskCard({ index, title, tags, onDelete, setActiveCard }: Props) {
       onDragStart={() => setActiveCard(index)}
       onDragEnd={() => setActiveCard(null)}
     >
-      <p className='task_text'>{title}</p>
+      <p className='task_text'>
+        {title}
+        {index}
+      </p>
       <div className='task_card_bottom_line '>
         <div className='task_card_tags'>
           {tags.map((tag) => (
-            <Tag tagName={tag} selected />
+            <Tag key={tag} tagName={tag} selected />
           ))}
         </div>
         <div className='task_delete' onClick={onDelete}>

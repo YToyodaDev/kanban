@@ -1,50 +1,35 @@
-import React from 'react';
-import { Task, TaskStatus } from '../type';
+import React, { useState } from 'react';
+import { TaskStatus } from '../type';
 import DropArea from './DropArea';
 import TaskCard from './TaskCard';
 import './TaskColumn.css';
+import { useTask } from '../context/TaskContext';
 
 type Props = {
   title: string;
   icon?: string;
-  tasks: Task[];
   status: TaskStatus;
-  handleDelete: (index: number) => void;
-  setActiveCard: React.Dispatch<React.SetStateAction<number | null>>;
-  onDrop: (status: TaskStatus, position: number) => void;
 };
 
-function TaskColumn({
-  title,
-  icon,
-  tasks,
-  status,
-  handleDelete,
-  setActiveCard,
-  onDrop,
-}: Props) {
+function TaskColumn({ title, icon, status }: Props) {
+  const { tasks, handleDrop } = useTask();
+  // const { firstIndex, setFirstIndex } = useState<number>(0);
   return (
     <section className='task_column'>
       <h2 className='task_column_header'>
         <img className='task_column_icon' src={icon} />
         {title}
       </h2>
-      <DropArea onDrop={onDrop.bind(null, status, 0)} />
+      <DropArea onDrop={handleDrop.bind(null, status, 0)} />
+
       {tasks.map(
         (task, index) =>
           task.status === status && (
             <React.Fragment key={index}>
-              <TaskCard
-                title={task.task}
-                tags={task.tags}
-                index={index}
-                onDelete={handleDelete.bind(null, index)}
-                setActiveCard={setActiveCard}
-              />
+              <TaskCard title={task.task} tags={task.tags} index={index} />
               <DropArea
                 index={index}
-                onDrop={onDrop.bind(null, status, index + 1)}
-                status={status}
+                onDrop={handleDrop.bind(null, status, index + 1)}
               />
             </React.Fragment>
           )
