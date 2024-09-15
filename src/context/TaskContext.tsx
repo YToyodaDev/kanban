@@ -3,9 +3,15 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { Task, TaskStatus } from '../type';
 
+type ActiveCard = {
+  arrIdx: number;
+  colIdx: number;
+  status: TaskStatus;
+};
+
 interface TaskContextType {
-  activeCard: number | null;
-  setActiveCard: React.Dispatch<React.SetStateAction<number | null>>;
+  activeCard: ActiveCard | null;
+  setActiveCard: React.Dispatch<React.SetStateAction<ActiveCard | null>>;
   tasks: Task[];
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   handleDelete: (taskIndex: number) => void;
@@ -21,7 +27,7 @@ const oldTasks = localStorage.getItem('tasks');
 console.log(oldTasks);
 
 function TaskProvider({ children }: Props) {
-  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [activeCard, setActiveCard] = useState<ActiveCard | null>(null);
   const [tasks, setTasks] = useState<Task[]>(
     (oldTasks && JSON.parse(oldTasks)) || []
   );
@@ -31,14 +37,16 @@ function TaskProvider({ children }: Props) {
     setTasks(newTasks);
   }
   function handleDrop(status: TaskStatus, position: number) {
-    console.log(
-      `${activeCard} is going to place into ${status} and at the position ${position}`
-    );
-    if (activeCard == null || activeCard === undefined) return;
-    const taskToMove = tasks[activeCard];
-    const updatedTasks = tasks.filter((_, index) => index !== activeCard);
+    if (activeCard === null || activeCard?.arrIdx === null) return;
 
-    updatedTasks.splice(position, 0, {
+    const { arrIdx } = activeCard;
+    const taskToMove = tasks[arrIdx];
+
+    const updatedTasks = tasks.filter((_, index) => index !== arrIdx);
+
+    const adjustedPosition = position > arrIdx ? position - 1 : position;
+
+    updatedTasks.splice(adjustedPosition, 0, {
       ...taskToMove,
       status: status,
     });

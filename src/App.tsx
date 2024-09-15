@@ -6,9 +6,6 @@ import DoneIcon from './assets/check-mark-button.png';
 import DoingIcon from './assets/glowing-star.png';
 import { TaskStatus } from './type';
 
-const oldTasks = localStorage.getItem('tasks');
-console.log(oldTasks);
-
 function App() {
   return (
     <div className='app'>

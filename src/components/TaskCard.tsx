@@ -2,26 +2,34 @@ import Tag from './Tag';
 import './TaskCard.css';
 import deleteIcon from '../assets/delete.png';
 import { useTask } from '../context/TaskContext';
+import { Task } from '../type';
 
 interface Props {
-  title: string;
-  tags: string[];
-  index: number;
+  task: Task;
+  arrIdx: number;
+  colIdx: number;
 }
 
-function TaskCard({ index, title, tags }: Props) {
+function TaskCard({
+  arrIdx,
+  colIdx,
+  task: { task: title, tags, status },
+}: Props) {
   const { setActiveCard, handleDelete } = useTask();
-  const onDelete = handleDelete.bind(null, index);
+  const onDelete = handleDelete.bind(null, arrIdx);
   return (
     <article
       className='task_card'
       draggable
-      onDragStart={() => setActiveCard(index)}
+      onDragStart={() =>
+        setActiveCard((prev) => ({ ...prev, arrIdx, colIdx, status }))
+      }
       onDragEnd={() => setActiveCard(null)}
     >
       <p className='task_text'>
-        {title}
-        {index}
+        {/* {colIdx} */}
+        <span> {title}</span>
+        {arrIdx}
       </p>
       <div className='task_card_bottom_line '>
         <div className='task_card_tags'>

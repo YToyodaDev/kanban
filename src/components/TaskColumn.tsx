@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TaskStatus } from '../type';
 import DropArea from './DropArea';
 import TaskCard from './TaskCard';
@@ -20,20 +20,33 @@ function TaskColumn({ title, icon, status }: Props) {
         <img className='task_column_icon' src={icon} />
         {title}
       </h2>
-      <DropArea onDrop={handleDrop.bind(null, status, 0)} />
+      <DropArea
+        onDrop={handleDrop.bind(null, status, 0)}
+        arrIdx={0}
+        colIdx={1}
+        status={status}
+      />
+      {(() => {
+        let colIdx = 0; // Track index within the current column
+        return tasks.map((task, arrIdx) => {
+          if (task.status === status) {
+            colIdx++; // Increment for the next matching task
 
-      {tasks.map(
-        (task, index) =>
-          task.status === status && (
-            <React.Fragment key={index}>
-              <TaskCard title={task.task} tags={task.tags} index={index} />
-              <DropArea
-                index={index}
-                onDrop={handleDrop.bind(null, status, index + 1)}
-              />
-            </React.Fragment>
-          )
-      )}
+            return (
+              <React.Fragment key={arrIdx}>
+                <TaskCard task={task} colIdx={colIdx} arrIdx={arrIdx} />
+                <DropArea
+                  arrIdx={arrIdx}
+                  colIdx={colIdx + 1}
+                  status={status}
+                  onDrop={handleDrop.bind(null, status, arrIdx + 1)}
+                />
+              </React.Fragment>
+            );
+          }
+          return null; // Skip tasks that don't match the status
+        });
+      })()}
     </section>
   );
 }
