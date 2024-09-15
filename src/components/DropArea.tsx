@@ -14,11 +14,13 @@ function DropArea({ colIdx, arrIdx, onDrop, status }: Props) {
   const [showDrop, setShowDrop] = useState(false);
 
   function handleDragEnter() {
+    if (!activeCard) return;
+
     if (
-      (activeCard?.colIdx &&
+      (activeCard.colIdx &&
         colIdx !== activeCard.colIdx &&
         colIdx !== activeCard.colIdx + 1) ||
-      activeCard?.status !== status
+      activeCard.status !== status
     ) {
       setShowDrop(true);
       console.log({ activeCard, colIdx, arrIdx, status });
@@ -26,6 +28,7 @@ function DropArea({ colIdx, arrIdx, onDrop, status }: Props) {
   }
   function handleDrop() {
     // setShowDrop(true);
+    console.log(activeCard);
     if (showDrop) {
       console.log({ activeCard, colIdx, arrIdx, status });
       onDrop();
@@ -40,7 +43,9 @@ function DropArea({ colIdx, arrIdx, onDrop, status }: Props) {
       }}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
-      className={showDrop ? 'drop_area' : 'hide_drop'}
+      className={
+        showDrop ? 'drop_area' : activeCard ? 'hide_drop' : 'close_drop'
+      }
     >
       Drop Here {colIdx && colIdx - 1}
     </section>
